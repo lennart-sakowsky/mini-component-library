@@ -50,6 +50,7 @@ const ProgressBar = ({ value, size }) => {
         "--borderRadius": styles.borderRadius,
       }}
     >
+      <VisuallyHidden>{value + "%"}</VisuallyHidden>
       <Bar
         style={{
           "--width": value + "%",
