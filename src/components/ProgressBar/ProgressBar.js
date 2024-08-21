@@ -26,40 +26,52 @@ const SIZES = {
 const ProgressBar = ({ value, size }) => {
   const styles = SIZES[size];
 
-  const Progress = styled.div`
-    width: 370px;
-    padding: var(--padding);
-    border-radius: var(--borderRadius);
-    background-color: ${COLORS.transparentGray15};
-    box-shadow: inset 0px 2px 4px ${COLORS.transparentGray35};
-  `;
-
-  const Bar = styled.div`
-    width: var(--width);
-    height: var(--height);
-    background-color: ${COLORS.primary};
-    border-radius: var(--borderRadius);
-  `;
+  if (!styles) {
+    throw new Error(`Unknown size passed to ProgressBar: ${size}`);
+  }
 
   return (
-    <Progress
+    <ProgressWrapper
       role="progressbar"
       aria-valuenow={value}
+      aria-valuemin="0"
+      aria-valuemax="100"
       style={{
         "--padding": styles.padding,
         "--borderRadius": styles.borderRadius,
       }}
     >
       <VisuallyHidden>{value + "%"}</VisuallyHidden>
-      <Bar
-        style={{
-          "--width": value + "%",
-          "--height": styles.height,
-          "--borderRadius": styles.borderRadius,
-        }}
-      />
-    </Progress>
+      <BarWrapper>
+        <Bar
+          style={{
+            "--width": value + "%",
+            "--height": styles.height,
+          }}
+        />
+      </BarWrapper>
+    </ProgressWrapper>
   );
 };
+
+const ProgressWrapper = styled.div`
+  padding: var(--padding);
+  border-radius: var(--borderRadius);
+  background-color: ${COLORS.transparentGray15};
+  box-shadow: inset 0px 2px 4px ${COLORS.transparentGray35};
+`;
+
+const BarWrapper = styled.div`
+  border-radius: 4px;
+  // Cut of edges from the Bar when reaching close to 100%
+  overflow: hidden;
+`;
+
+const Bar = styled.div`
+  width: var(--width);
+  height: var(--height);
+  background-color: ${COLORS.primary};
+  border-radius: 4px 0 0 4px;
+`;
 
 export default ProgressBar;
